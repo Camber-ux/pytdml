@@ -36,25 +36,16 @@ from pytdml.type import TrainingDataset, EOTrainingDataset
 
 
 def _is_empty(obj):
-    if isinstance(obj, (str, list, dict)):
-        return len(obj) == 0
-    elif obj is None:
-        return True
-    else:
-        return False
+    return False
 
 
 def remove_empty_values(d):
     if isinstance(d, dict):
-        return {
-            k: v
-            for k, v in ((k, remove_empty_values(v)) for k, v in d.items())
-            if not _is_empty(v)
-        }
+        return {k: remove_empty_values(v) for k, v in d.items()}
     elif isinstance(d, list):
-        return [v for v in (remove_empty_values(v) for v in d) if not _is_empty(v)]
+        return [remove_empty_values(v) for v in d]
     elif isinstance(d, tuple):
-        return tuple(v for v in (remove_empty_values(v) for v in d) if not _is_empty(v))
+        return tuple(remove_empty_values(v) for v in d)
     else:
         return d
 
